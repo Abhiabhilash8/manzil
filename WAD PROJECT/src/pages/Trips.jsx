@@ -140,7 +140,7 @@ export default function Trips() {
   return (
     <div className="page-container">
       {isAlarmRinging && (
-        <div style={{ position: 'sticky', top: '10px', zIndex: 2000, margin: '0 16px 16px 16px', padding: '16px', background: '#d00000', color: 'white', borderRadius: 'var(--radius-md)', boxShadow: '0 8px 32px rgba(208, 0, 0, 0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', animation: 'pulse 2s infinite' }}>
+        <div style={{ position: 'sticky', top: '80px', zIndex: 2000, margin: '0 16px 16px 16px', padding: '16px', background: '#d00000', color: 'white', borderRadius: 'var(--radius-md)', boxShadow: '0 8px 32px rgba(208, 0, 0, 0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', animation: 'pulse 2s infinite' }}>
           <h2 style={{ fontSize: '1.2rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '1.5rem' }}>📍</span> Destination Reached!
           </h2>
@@ -155,9 +155,35 @@ export default function Trips() {
       )}
 
       <div className="page-header">
-        <h1 className="page-title text-green">Plan a Trip</h1>
-        <p className="page-subtitle">Schedule your journey and get alerts</p>
+        <h1 className="page-title text-green">{trackingTrip ? 'Transit Mode' : 'Plan a Trip'}</h1>
+        <p className="page-subtitle">{trackingTrip ? 'Rest easy, we will wake you.' : 'Schedule your journey and get alerts'}</p>
       </div>
+
+      {trackingTrip ? (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: '24px' }}>
+          <div className="motion-hero-container" style={{ marginBottom: '40px' }}>
+            <img src="/motion-ui-hero.png" alt="Woman sleeping peacefully in a bus" className="motion-hero-img" />
+            
+            {/* Superimposed Floating UI Badge */}
+            <div className="motion-badge">
+              <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}>📍</span>
+              <div className="motion-badge-text">
+                Destination: {trackingTrip.to}<br/>
+                <span style={{ fontSize: '0.9rem', color: 'var(--text-main)' }}>Currently <strong style={{color: 'var(--primary-green)'}}>{currentDist || '...'} km</strong> away</span>
+              </div>
+            </div>
+          </div>
+          
+          <button 
+            onClick={() => setTrackingTrip(null)}
+            className="btn-primary"
+            style={{ backgroundColor: 'transparent', color: 'var(--text-muted)', border: '1px solid var(--border-color)', boxShadow: 'none' }}
+          >
+            Cancel Trip Tracking
+          </button>
+        </div>
+      ) : (
+        <>
 
       <div className="card" style={{ marginBottom: '8px' }}>
         <h3 style={{ fontSize: '1rem', marginBottom: '12px' }}>Quick Trips</h3>
@@ -250,20 +276,6 @@ export default function Trips() {
           </div>
         )}
 
-        {trackingTrip && (
-          <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-cream)', border: '1px solid var(--primary-green)', borderRadius: 'var(--radius-sm)', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <div>
-              <span style={{ color: 'var(--primary-green)', fontWeight: 700 }}>📡 Tracking Live:</span> Currently 
-              <span style={{ margin: '0 4px', fontWeight: 800 }}>{currentDist || '...'} km</span> away from {trackingTrip.to}.
-            </div>
-            <button 
-              onClick={() => audioRef.current?.play()}
-              style={{ padding: '4px 8px', fontSize: '0.7rem', background: 'var(--primary-green)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-            >
-              Test Sound 🎵
-            </button>
-          </div>
-        )}
       </div>
 
       <div style={{ marginTop: '8px' }}>
@@ -287,6 +299,8 @@ export default function Trips() {
         radius={formData.radius}
         onLocationSelect={handleMapSelect}
       />
+      </>
+      )}
 
       {/* Hidden audio element for the alarm */}
       <audio 

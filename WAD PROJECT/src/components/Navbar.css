@@ -1,77 +1,91 @@
-.bottom-navbar {
+.top-navbar {
   position: fixed;
-  bottom: 0;
+  top: 0;
   left: 0;
   width: 100%;
-  background-color: var(--bg-card);
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
-  z-index: 1000;
-  border-top: 1px solid var(--border-color);
+  background: linear-gradient(180deg, rgba(5, 10, 15, 0.7) 0%, rgba(5, 10, 15, 0.2) 100%);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.1);
+  z-index: 1050;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: center;
+  align-items: center;
+  height: 64px;
 }
+
 
 .nav-container {
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   display: flex;
-  justify-content: space-around;
-  padding: 6px 16px 4px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.nav-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.nav-logo-img {
+  height: 32px;
+  width: auto;
+}
+
+.nav-logo-text {
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  letter-spacing: 1px;
+  color: white; /* Changed from primary-green */
+  text-transform: uppercase;
+}
+
+.nav-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
 }
 
 .nav-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
   text-decoration: none;
-  color: var(--text-muted);
-  gap: 1px;
+  color: rgba(255,255,255,0.7); /* Changed from text-muted */
+  gap: 6px;
   position: relative;
   transition: color 0.2s ease;
-  width: 60px;
-}
-
-.nav-item:hover {
-  color: var(--primary-green);
-}
-
-.nav-item.active {
-  color: var(--primary-green);
-}
-
-.icon-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 20px;
-}
-
-.nav-label {
-  font-size: 0.6rem;
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
-.active-dot {
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background-color: transparent;
-  margin-top: 2px;
-  transition: background-color 0.2s ease;
+.nav-item:hover, .nav-item.active {
+  color: white; /* Changed from primary-green */
 }
 
-.nav-item.active .active-dot {
-  background-color: var(--primary-green);
-}
-
-.footer-text {
-  position: fixed;
-  bottom: 0;
+.active-bar {
+  position: absolute;
+  bottom: -22px; 
+  left: 0;
   width: 100%;
-  text-align: center;
-  font-size: 0.5rem;
-  color: var(--border-color);
-  pointer-events: none;
-  z-index: 1001;
-  opacity: 0.4;
+  height: 3px;
+  background-color: white; /* Changed from primary-green */
+  border-radius: 3px 3px 0 0;
+  opacity: 0;
+  transition: opacity 0.2s ease;
 }
+
+.nav-item.active .active-bar {
+  opacity: 1;
+}
+
+/* Hide footer text in new design, or position it elsewhere */
+.footer-text {
+  display: none;
+}
+

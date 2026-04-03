@@ -4,32 +4,44 @@ export default function Landing() {
   return (
     <div className="landing-container">
       
-      <div className="hero-section">
-        <h2 className="hero-title">
-          Your Ultimate<br/>Travel Companion
-        </h2>
-        <p className="hero-subtitle">
-          Smart alerts, live weather, and seamless bookings perfectly integrated into one beautiful, immersive experience.
-        </p>
+      <div className="hero-section" style={{ flexDirection: 'row', textAlign: 'left', gap: '40px', justifyContent: 'space-between', padding: '60px 20px', maxWidth: '1200px' }}>
+        
+        {/* Left Column: Text & CTA */}
+        <div style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <h2 className="hero-title" style={{ textAlign: 'left', margin: '0 0 20px 0', fontSize: 'clamp(2.5rem, 5vw, 4.5rem)' }}>
+            Rest Easy.<br/>We'll Wake You.
+          </h2>
+          <p className="hero-subtitle" style={{ textAlign: 'left', margin: '0 0 40px 0', maxWidth: '500px' }}>
+            Manzil is your ultimate travel companion. Let us handle the smart alerts, live weather, and bookings so you can relax entirely.
+          </p>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            <Link to="/signup" style={{ textDecoration: 'none' }}>
+              <button className="btn-primary" style={{ padding: '16px 40px', fontSize: '1.1rem' }}>
+                Start Sleeping
+              </button>
+            </Link>
+            <Link to="/signin" style={{ textDecoration: 'none' }}>
+              <button className="btn-primary" style={{ padding: '16px 40px', fontSize: '1.1rem', backgroundColor: 'transparent', color: 'var(--primary-green)', border: '2px solid var(--primary-green)', boxShadow: 'none' }}>
+                Sign In
+              </button>
+            </Link>
+          </div>
+        </div>
 
-        <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <Link to="/signup" style={{ textDecoration: 'none' }}>
-            <button className="btn-primary" style={{ padding: '16px 40px', fontSize: '1.1rem' }}>
-              Get Started
-            </button>
-          </Link>
-          <Link to="/signin" style={{ textDecoration: 'none' }}>
-            <button className="btn-primary" style={{ 
-              padding: '16px 40px', 
-              fontSize: '1.1rem', 
-              backgroundColor: 'transparent', 
-              color: 'var(--primary-green)', 
-              border: '2px solid var(--primary-green)',
-              boxShadow: 'none'
-            }}>
-              Sign In
-            </button>
-          </Link>
+        {/* Right Column: Motion UI Illustration */}
+        <div style={{ flex: '1.2', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="motion-hero-container">
+            <img src="/motion-ui-hero.png" alt="Woman sleeping peacefully in a bus" className="motion-hero-img" />
+            
+            {/* Superimposed Floating UI Badge */}
+            <div className="motion-badge">
+              <span style={{ fontSize: '1.5rem', filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))' }}>📍</span>
+              <div className="motion-badge-text">
+                Destination 500m Away<br/>
+                <span style={{ fontSize: '0.75rem', opacity: 0.8, fontWeight: 500 }}>Alarm Active • Sleep Safe</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 

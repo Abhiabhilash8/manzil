@@ -7,6 +7,7 @@ import Trips from './pages/Trips';
 import MyBookings from './pages/MyBookings';
 import Subscriptions from './pages/Subscriptions';
 import Profile from './pages/Profile';
+import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import WeatherWidget from './components/WeatherWidget';
 
@@ -21,17 +22,17 @@ function App() {
 
   return (
     <>
-      <div className="global-header">
-        <h1>MANZIL</h1>
-      </div>
-      
+      <div className="home-bg-layer"></div>
+      <div className="home-bg-overlay"></div>
+
+      {user && <Navbar />}
       {user && <WeatherWidget />}
       
-      <div className="main-content-wrapper">
+      <div className="main-content-wrapper" style={{ paddingTop: user ? '80px' : '0', position: 'relative', zIndex: 1 }}>
         <Routes>
-          <Route path="/" element={user ? <Navigate to="/trips" /> : <Landing />} />
-          <Route path="/signin" element={user ? <Navigate to="/trips" /> : <SignIn />} />
-          <Route path="/signup" element={user ? <Navigate to="/trips" /> : <SignUp />} />
+          <Route path="/" element={user ? <Home /> : <Landing />} />
+          <Route path="/signin" element={user ? <Navigate to="/" /> : <SignIn />} />
+          <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUp />} />
           
           <Route path="/trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
           <Route path="/bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
@@ -39,8 +40,6 @@ function App() {
           <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         </Routes>
       </div>
-
-      {user && <Navbar />}
     </>
   );
 }
