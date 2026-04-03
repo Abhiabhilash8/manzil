@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import BookingCard from '../components/BookingCard';
-import MapPlaceholder from '../components/MapPlaceholder';
+import RealMap from '../components/RealMap';
 
 export default function MyBookings() {
   const { user } = useAuth();
-  const [searchParams, setSearchParams] = useState({ from: '', to: '', date: '' });
+  const [searchParams, setSearchParams] = useState({ from: '', to: '', date: '', toCoords: null });
   const [searched, setSearched] = useState(false);
   
   // Locked screen for basic users
@@ -40,6 +40,14 @@ export default function MyBookings() {
     setSearched(true);
   };
 
+  const handleMapSelect = (lat, lng) => {
+    setSearchParams(prev => ({ 
+      ...prev, 
+      to: `${lat.toFixed(4)}, ${lng.toFixed(4)}`, 
+      toCoords: { lat, lng } 
+    }));
+  };
+
   return (
     <div className="page-container">
       <div className="page-header">
@@ -56,7 +64,7 @@ export default function MyBookings() {
             </div>
             <div className="input-group">
               <label>To</label>
-              <input type="text" required value={searchParams.to} onChange={e => setSearchParams({...searchParams, to: e.target.value})} placeholder="City" />
+              <input type="text" required value={searchParams.to} onChange={e => setSearchParams({...searchParams, to: e.target.value})} placeholder="City or Click Map" />
             </div>
           </div>
           <div className="input-group">
@@ -69,7 +77,10 @@ export default function MyBookings() {
         </form>
       </div>
 
-      <MapPlaceholder />
+      <RealMap 
+        destination={searchParams.toCoords}
+        onLocationSelect={handleMapSelect}
+      />
 
       {searched && (
         <div style={{ marginTop: '24px' }}>

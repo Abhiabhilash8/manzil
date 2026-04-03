@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import TripCard from '../components/TripCard';
-import MapPlaceholder from '../components/MapPlaceholder';
+import RealMap from '../components/RealMap';
 import WeatherForecastChart from '../components/WeatherForecastChart';
+import { calculateDistance, getCoordinates, getLocationName } from '../utils/locationService';
 
 export default function Trips() {
   const [formData, setFormData] = useState({
@@ -9,12 +10,18 @@ export default function Trips() {
     to: '',
     date: '',
     time: '',
+    alertType: 'time', // 'time' or 'location'
     alertTime: '15 min',
-    mode: 'Bus'
+    radius: '1 km',
+    mode: 'Bus',
+    fromCoords: null, // {lat, lon, name}
+    toCoords: null    // {lat, lon, name}
   });
   const [submitted, setSubmitted] = useState(false);
   const [trips, setTrips] = useState([]);
   const [showChart, setShowChart] = useState(false);
+  const [isAlarmRinging, setIsAlarmRinging] = useState(false);
+  const audioRef = useRef(null);
   
   // Mock forecast data for chart
   const mockForecast = [
@@ -24,6 +31,76 @@ export default function Trips() {
     { time: '19:00', temp: 22, feelsLike: 22, humidity: 70, description: 'Clear' },
     { time: '22:00', temp: 19, feelsLike: 19, humidity: 75, description: 'Cool' },
   ];
+
+  const [trackingTrip, setTrackingTrip] = useState(null);
+  const [currentDist, setCurrentDist] = useState(null);
+
+  // Geolocation watcher
+  useEffect(() => {
+    let watcher = null;
+    
+    const checkProximity = async (position) => {
+      const { latitude, longitude } = position.coords;
+      
+      let targetLat, targetLon;
+      if (trackingTrip.toCoords) {
+        targetLat = trackingTrip.toCoords.lat;
+        targetLon = trackingTrip.toCoords.lon; // FIXED: from lng
+      } else {
+        const coords = await getCoordinates(trackingTrip.to);
+        targetLat = coords.lat;
+        targetLon = coords.lon;
+      }
+
+      const distance = calculateDistance(latitude, longitude, targetLat, targetLon);
+      setCurrentDist(distance.toFixed(3));
+
+      // Radius unit conversion
+      const radiusValue = parseFloat(trackingTrip.radius);
+      const isMeters = trackingTrip.radius.includes('m') && !trackingTrip.radius.includes('km');
+      const radiusInKm = isMeters ? radiusValue / 1000 : radiusValue;
+
+      if (distance <= radiusInKm) {
+        if (audioRef.current) {
+          audioRef.current.play().catch(e => console.warn("Audio play blocked", e));
+        }
+        setIsAlarmRinging(true);
+        setTrackingTrip(null); 
+      }
+    };
+
+    if (trackingTrip && trackingTrip.alertType === 'location') {
+      // Immediate check
+      navigator.geolocation.getCurrentPosition(checkProximity, (err) => console.error(err));
+      
+      // Continuous watcher
+      watcher = navigator.geolocation.watchPosition(
+        checkProximity,
+        (error) => console.error("Geolocation error:", error),
+        { enableHighAccuracy: true }
+      );
+    }
+    return () => {
+      if (watcher) navigator.geolocation.clearWatch(watcher);
+    };
+  }, [trackingTrip]);
+
+  const handleMapSelect = async (lat, lng, mode) => {
+    const name = await getLocationName(lat, lng);
+    if (mode === 'source') {
+      setFormData(prev => ({ 
+        ...prev, 
+        from: name, 
+        fromCoords: { lat, lon: lng, name } 
+      }));
+    } else {
+      setFormData(prev => ({ 
+        ...prev, 
+        to: name, 
+        toCoords: { lat, lon: lng, name } 
+      }));
+    }
+  };
 
   const handleQuickTrip = (from, to) => {
     setFormData(prev => ({ ...prev, from, to }));
@@ -36,18 +113,47 @@ export default function Trips() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setSubmitted(true);
-    setTrips([{ ...formData }, ...trips]);
+    const newTrip = { ...formData };
+    setTrips([newTrip, ...trips]);
+
+    if (newTrip.alertType === 'location') {
+      setTrackingTrip(newTrip);
+    }
     
     // reset form
     setFormData({
-      from: '', to: '', date: '', time: '', alertTime: '15 min', mode: 'Bus'
+      from: '', to: '', date: '', time: '', alertType: 'time', alertTime: '15 min', radius: '1 km', mode: 'Bus',
+      fromCoords: null, toCoords: null
     });
     
     setTimeout(() => setSubmitted(false), 3000);
   };
 
+  const handleStopAlarm = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+    setIsAlarmRinging(false);
+  };
+
   return (
     <div className="page-container">
+      {isAlarmRinging && (
+        <div style={{ position: 'sticky', top: '10px', zIndex: 2000, margin: '0 16px 16px 16px', padding: '16px', background: '#d00000', color: 'white', borderRadius: 'var(--radius-md)', boxShadow: '0 8px 32px rgba(208, 0, 0, 0.4)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', animation: 'pulse 2s infinite' }}>
+          <h2 style={{ fontSize: '1.2rem', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '1.5rem' }}>📍</span> Destination Reached!
+          </h2>
+          <p style={{ margin: 0, fontSize: '0.9rem', opacity: 0.9 }}>You have entered the alert radius.</p>
+          <button 
+            onClick={handleStopAlarm}
+            style={{ padding: '8px 24px', background: 'white', color: '#d00000', border: 'none', borderRadius: 'var(--radius-sm)', fontWeight: 'bold', fontSize: '1rem', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}
+          >
+            STOP ALARM
+          </button>
+        </div>
+      )}
+
       <div className="page-header">
         <h1 className="page-title text-green">Plan a Trip</h1>
         <p className="page-subtitle">Schedule your journey and get alerts</p>
@@ -91,13 +197,36 @@ export default function Trips() {
 
           <div className="form-grid">
             <div className="input-group">
-              <label>Alert me</label>
-              <select name="alertTime" value={formData.alertTime} onChange={handleChange}>
-                <option>15 min</option>
-                <option>30 min</option>
-                <option>1 hour</option>
+              <label>Alert Trigger</label>
+              <select name="alertType" value={formData.alertType} onChange={handleChange}>
+                <option value="time">Time-based</option>
+                <option value="location">Location-based</option>
               </select>
             </div>
+            
+            {formData.alertType === 'time' ? (
+              <div className="input-group">
+                <label>Alert me</label>
+                <select name="alertTime" value={formData.alertTime} onChange={handleChange}>
+                  <option>15 min</option>
+                  <option>30 min</option>
+                  <option>1 hour</option>
+                </select>
+              </div>
+            ) : (
+              <div className="input-group">
+                <label>Alert Radius</label>
+                <select name="radius" value={formData.radius} onChange={handleChange}>
+                  <option>500 m</option>
+                  <option>1 km</option>
+                  <option>2 km</option>
+                  <option>5 km</option>
+                </select>
+              </div>
+            )}
+          </div>
+
+          <div className="form-grid">
             <div className="input-group">
               <label>Mode</label>
               <select name="mode" value={formData.mode} onChange={handleChange}>
@@ -117,7 +246,22 @@ export default function Trips() {
         
         {submitted && (
           <div style={{ marginTop: '16px', padding: '12px', backgroundColor: 'rgba(45, 106, 79, 0.1)', color: 'var(--primary-green)', borderRadius: 'var(--radius-sm)', textAlign: 'center', fontWeight: 600 }}>
-            🎉 Trip scheduled successfully! Alert is active.
+            🎉 {formData.alertType === 'location' ? 'Location tracking active!' : 'Trip scheduled successfully!'}
+          </div>
+        )}
+
+        {trackingTrip && (
+          <div style={{ marginTop: '12px', padding: '12px', background: 'var(--bg-cream)', border: '1px solid var(--primary-green)', borderRadius: 'var(--radius-sm)', fontSize: '0.9rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <div>
+              <span style={{ color: 'var(--primary-green)', fontWeight: 700 }}>📡 Tracking Live:</span> Currently 
+              <span style={{ margin: '0 4px', fontWeight: 800 }}>{currentDist || '...'} km</span> away from {trackingTrip.to}.
+            </div>
+            <button 
+              onClick={() => audioRef.current?.play()}
+              style={{ padding: '4px 8px', fontSize: '0.7rem', background: 'var(--primary-green)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+            >
+              Test Sound 🎵
+            </button>
           </div>
         )}
       </div>
@@ -137,7 +281,20 @@ export default function Trips() {
         )}
       </div>
 
-      <MapPlaceholder />
+      <RealMap 
+        source={formData.fromCoords}
+        destination={formData.toCoords} 
+        radius={formData.radius}
+        onLocationSelect={handleMapSelect}
+      />
+
+      {/* Hidden audio element for the alarm */}
+      <audio 
+        ref={audioRef} 
+        src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" 
+        preload="auto"
+        loop
+      />
 
       {trips.length > 0 && (
         <div style={{ marginTop: '24px' }}>
