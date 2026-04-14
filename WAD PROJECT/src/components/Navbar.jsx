@@ -17,6 +17,7 @@ export default function Navbar() {
           
           <Link to="/" className="nav-logo-area">
             <img src="/logo.png" alt="Manzil Logo" className="nav-logo-img" />
+            <span className="nav-logo-bus">🚌</span>
             <span className="nav-logo-text">Manzil</span>
           </Link>
 
@@ -49,4 +50,3 @@ export default function Navbar() {
     </>
   );
 }
-
