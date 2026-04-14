@@ -1,5 +1,6 @@
 import { useAuth } from '../context/AuthContext';
 import PlanCard from '../components/PlanCard';
+import PageTransition from '../components/PageTransition';
 
 export default function Subscriptions() {
   const { user, updatePlan } = useAuth();
@@ -29,27 +30,29 @@ export default function Subscriptions() {
   ];
 
   const handleSelectPlan = (planId) => {
-    // In a real app we would do payment verification
     updatePlan(planId);
   };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1 className="page-title" style={{ color: 'var(--accent-brown)' }}>Subscriptions</h1>
-        <p className="page-subtitle">Upgrade your travel experience</p>
-      </div>
+    <PageTransition>
+      <div style={{ display: 'flex', flexDirection: 'column', height: 'calc(100vh - 80px)', overflow: 'hidden', padding: '24px', boxSizing: 'border-box', maxWidth: '1100px', margin: '0 auto', width: '100%' }}>
+        <div className="page-header">
+          <h1 className="page-title" style={{ color: 'var(--accent-brown)' }}>Subscriptions</h1>
+          <p className="page-subtitle">Upgrade your travel experience</p>
+        </div>
 
-      <div style={{ marginTop: '16px' }}>
-        {plans.map(plan => (
-          <PlanCard 
-            key={plan.id} 
-            plan={plan} 
-            currentPlan={user?.plan} 
-            onSelect={handleSelectPlan} 
-          />
-        ))}
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '16px', flex: 1, overflow: 'hidden', alignItems: 'stretch', marginTop: '16px' }}>
+          {plans.map(plan => (
+            <PlanCard 
+              key={plan.id} 
+              plan={plan} 
+              currentPlan={user?.plan} 
+              onSelect={handleSelectPlan} 
+              style={{ flex: 1 }}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
