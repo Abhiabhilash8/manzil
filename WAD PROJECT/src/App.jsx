@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Landing from './pages/Landing';
 import SignIn from './pages/SignIn';
@@ -19,6 +19,7 @@ const ProtectedRoute = ({ children }) => {
 
 function App() {
   const { user } = useAuth();
+  const location = useLocation();
 
   return (
     <>
@@ -29,15 +30,15 @@ function App() {
       {user && <WeatherWidget />}
       
       <div className="main-content-wrapper" style={{ paddingTop: user ? '80px' : '0', position: 'relative', zIndex: 1 }}>
-        <Routes>
-          <Route path="/" element={user ? <Home /> : <Landing />} />
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={user ? <Home key={location.pathname} /> : <Landing />} />
           <Route path="/signin" element={user ? <Navigate to="/" /> : <SignIn />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUp />} />
           
-          <Route path="/trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
-          <Route path="/bookings" element={<ProtectedRoute><MyBookings /></ProtectedRoute>} />
-          <Route path="/subscriptions" element={<ProtectedRoute><Subscriptions /></ProtectedRoute>} />
-          <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/trips" element={<ProtectedRoute><Trips key={location.pathname} /></ProtectedRoute>} />
+          <Route path="/bookings" element={<ProtectedRoute><MyBookings key={location.pathname} /></ProtectedRoute>} />
+          <Route path="/subscriptions" element={<ProtectedRoute><Subscriptions key={location.pathname} /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><Profile key={location.pathname} /></ProtectedRoute>} />
         </Routes>
       </div>
     </>

@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import BookingCard from '../components/BookingCard';
 import RealMap from '../components/RealMap';
+import PageTransition from '../components/PageTransition';
 
 export default function MyBookings() {
   const { user } = useAuth();
@@ -12,20 +13,22 @@ export default function MyBookings() {
   // Locked screen for basic users
   if (user?.plan === 'basic') {
     return (
-      <div className="page-container" style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <div className="card" style={{ textAlign: 'center', maxWidth: '400px' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
-          <h2 className="page-title text-brown">Premium Feature</h2>
-          <p className="page-subtitle" style={{ marginBottom: '24px' }}>
-            Booking insights are only available on Gold and Premium plans.
-          </p>
-          <Link to="/subscriptions" style={{ textDecoration: 'none' }}>
-            <button className="btn-primary" style={{ backgroundColor: '#D4AF37' }}>
-              Upgrade Now
-            </button>
-          </Link>
+      <PageTransition>
+        <div className="page-container" style={{ alignItems: 'center', justifyContent: 'center' }}>
+          <div className="card" style={{ textAlign: 'center', maxWidth: '400px' }}>
+            <div style={{ fontSize: '3rem', marginBottom: '16px' }}>🔒</div>
+            <h2 className="page-title text-brown">Premium Feature</h2>
+            <p className="page-subtitle" style={{ marginBottom: '24px' }}>
+              Booking insights are only available on Gold and Premium plans.
+            </p>
+            <Link to="/subscriptions" style={{ textDecoration: 'none' }}>
+              <button className="btn-primary" style={{ backgroundColor: '#D4AF37' }}>
+                Upgrade Now
+              </button>
+            </Link>
+          </div>
         </div>
-      </div>
+      </PageTransition>
     );
   }
 
@@ -49,47 +52,49 @@ export default function MyBookings() {
   };
 
   return (
-    <div className="page-container">
-      <div className="page-header">
-        <h1 className="page-title text-blue">Find Tickets</h1>
-        <p className="page-subtitle">Compare buses and book instantly</p>
-      </div>
-
-      <div className="card">
-        <form onSubmit={handleSearch}>
-          <div className="form-grid">
-            <div className="input-group">
-              <label>From</label>
-              <input type="text" required value={searchParams.from} onChange={e => setSearchParams({...searchParams, from: e.target.value})} placeholder="City" />
-            </div>
-            <div className="input-group">
-              <label>To</label>
-              <input type="text" required value={searchParams.to} onChange={e => setSearchParams({...searchParams, to: e.target.value})} placeholder="City or Click Map" />
-            </div>
-          </div>
-          <div className="input-group">
-            <label>Date</label>
-            <input type="date" required value={searchParams.date} onChange={e => setSearchParams({...searchParams, date: e.target.value})} />
-          </div>
-          <button type="submit" className="btn-primary" style={{ backgroundColor: 'var(--secondary-blue)' }}>
-            Search Tickets
-          </button>
-        </form>
-      </div>
-
-      <RealMap 
-        destination={searchParams.toCoords}
-        onLocationSelect={handleMapSelect}
-      />
-
-      {searched && (
-        <div style={{ marginTop: '24px' }}>
-          <h2 style={{ fontSize: '1.25rem', marginBottom: '16px' }}>Available Buses</h2>
-          {mockResults.map(res => (
-            <BookingCard key={res.id} {...res} />
-          ))}
+    <PageTransition>
+      <div className="page-container">
+        <div className="page-header">
+          <h1 className="page-title text-blue">Find Tickets</h1>
+          <p className="page-subtitle">Compare buses and book instantly</p>
         </div>
-      )}
-    </div>
+
+        <div className="card">
+          <form onSubmit={handleSearch}>
+            <div className="form-grid">
+              <div className="input-group">
+                <label>From</label>
+                <input type="text" required value={searchParams.from} onChange={e => setSearchParams({...searchParams, from: e.target.value})} placeholder="City" />
+              </div>
+              <div className="input-group">
+                <label>To</label>
+                <input type="text" required value={searchParams.to} onChange={e => setSearchParams({...searchParams, to: e.target.value})} placeholder="City or Click Map" />
+              </div>
+            </div>
+            <div className="input-group">
+              <label>Date</label>
+              <input type="date" required value={searchParams.date} onChange={e => setSearchParams({...searchParams, date: e.target.value})} />
+            </div>
+            <button type="submit" className="btn-primary" style={{ backgroundColor: 'var(--secondary-blue)' }}>
+              Search Tickets
+            </button>
+          </form>
+        </div>
+
+        <RealMap 
+          destination={searchParams.toCoords}
+          onLocationSelect={handleMapSelect}
+        />
+
+        {searched && (
+          <div style={{ marginTop: '24px' }}>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '16px' }}>Available Buses</h2>
+            {mockResults.map(res => (
+              <BookingCard key={res.id} {...res} />
+            ))}
+          </div>
+        )}
+      </div>
+    </PageTransition>
   );
 }

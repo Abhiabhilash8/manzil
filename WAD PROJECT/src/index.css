@@ -403,3 +403,55 @@ select option {
   background: rgba(10, 15, 20, 0.45); /* Darken so white text pops */
 }
 
+/* Page Transitions */
+.page-transition { 
+  opacity: 0; 
+  transform: translateY(24px); 
+  filter: blur(4px); 
+  transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+              transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), 
+              filter 0.45s cubic-bezier(0.4, 0, 0.2, 1); 
+}
+
+.page-transition.page-enter-active { 
+  opacity: 1; 
+  transform: translateY(0); 
+  filter: blur(0); 
+}
+
+/* Landing Animations */
+@keyframes manzil-glow {
+  0%, 100% { 
+    color: white; 
+    text-shadow: 0 0 20px rgba(255,255,255,0.2);
+  }
+  33% { 
+    color: var(--primary-green); 
+    text-shadow: 0 0 30px rgba(45, 106, 79, 0.5);
+  }
+  66% { 
+    color: var(--secondary-blue); 
+    text-shadow: 0 0 30px rgba(127, 179, 213, 0.5);
+  }
+}
+
+@keyframes road-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-60px); }
+}
+
+@keyframes bus-drive {
+  from { transform: translateX(-120px); }
+  to { transform: translateX(calc(100vw + 120px)); }
+}
+
+@keyframes bus-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+@keyframes arrow-bounce {
+  0%, 100% { transform: translateY(0) translateX(-50%); }
+  50% { transform: translateY(8px) translateX(-50%); }
+}
+
