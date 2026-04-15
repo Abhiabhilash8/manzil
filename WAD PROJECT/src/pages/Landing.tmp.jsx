@@ -142,7 +142,7 @@ export default function Landing() {
       {/* Pages Wrapper */}
       <div style={{
         display: 'flex', flexDirection: 'column', height: '100%', width: '100%',
-        transform: 'translateY(-' + currentSlide * 100 + 'vh)',
+        transform: `translateY(-${currentSlide * 100}vh)`,
         transition: 'transform 0.6s cubic-bezier(0.77, 0, 0.175, 1)'
       }}>
         
@@ -211,7 +211,7 @@ export default function Landing() {
                   style={{
                     display: 'flex',
                     gap: '16px',
-                    transform: 'translateX(calc(-' + activeIndex + ' * (280px + 16px)))',
+                    transform: `translateX(0)`,
                     transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
                     willChange: 'transform',
                   }}
@@ -227,14 +227,14 @@ export default function Landing() {
                         borderRadius: 'var(--radius-lg)',
                         padding: '28px 24px',
                         background: activeIndex === i
-                          ? 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))'
+                          ? `linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))`
                           : 'rgba(255,255,255,0.07)',
                         backdropFilter: 'blur(16px)',
                         border: activeIndex === i
-                          ? '1px solid ' + slide.borderColor
+                          ? `1px solid ${slide.borderColor}`
                           : '1px solid rgba(255,255,255,0.1)',
                         boxShadow: activeIndex === i
-                          ? '0 8px 32px ' + slide.glowColor + ', 0 0 0 1px ' + slide.borderColor
+                          ? `0 8px 32px ${slide.glowColor}, 0 0 0 1px ${slide.borderColor}`
                           : 'none',
                         cursor: 'pointer',
                         transition: 'all 0.4s ease',
@@ -252,10 +252,10 @@ export default function Landing() {
                         textTransform: 'uppercase',
                         color: slide.accentColor,
                         marginBottom: '8px',
-                        background: slide.glowColor,
+                        background: `${slide.glowColor}`,
                         padding: '3px 10px',
                         borderRadius: 'var(--radius-pill)',
-                        border: '1px solid ' + slide.borderColor,
+                        border: `1px solid ${slide.borderColor}`,
                       }}>
                         {slide.subtitle}
                       </div>
@@ -293,13 +293,12 @@ export default function Landing() {
               </div>
             </div>
           </div>
-        </div>
 
         {/* Explore Slide */}
         <div style={{ width: '100vw', height: '100vh', flexShrink: 0, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <div className="features-grid" style={{ padding: '0 40px', gap: '32px' }}>
             {features.slice(0, 3).map((f, i) => (
-              <div key={i} className={'feature-card ' + ['green', 'blue', 'brown'][i]}>
+              <div key={i} className={`feature-card ${['green', 'blue', 'brown'][i]}`}>
                 <div className="feature-icon" style={{ fontSize: '2.5rem' }}>{f.icon}</div>
                 <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: 700 }}>{f.title}</h3>
                 <p style={{ color: '#444', fontSize: '1.05rem', lineHeight: 1.6 }}>{f.desc}</p>

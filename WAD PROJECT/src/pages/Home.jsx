@@ -7,6 +7,8 @@ import PageTransition from '../components/PageTransition';
 export default function Home() {
   const { user } = useAuth();
   const userName = user?.fullName?.split(' ')[0] || 'Traveler';
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
 
   // TODO State
   const [todos, setTodos] = useState(() => {
@@ -20,10 +22,73 @@ export default function Home() {
   const [newTodo, setNewTodo] = useState('');
   const todoPanelRef = useRef(null);
 
+  const featureSlides = [
+    {
+      id: 1,
+      icon: '🗺️',
+      title: 'Plan a Trip',
+      subtitle: 'Schedule New Alert',
+      description: 'Set From/To destinations, pick a date and time, choose time-based or location-based trigger and schedule your alert instantly.',
+      accentColor: 'var(--primary-green)',
+      borderColor: 'rgba(45,106,79,0.5)',
+      glowColor: 'rgba(45,106,79,0.2)',
+    },
+    {
+      id: 2,
+      icon: '📍',
+      title: 'Live Maps',
+      subtitle: 'Interactive Destination Picker',
+      description: 'Click anywhere on the live Leaflet map to pin your destination. Switch between Source and Destination modes seamlessly.',
+      accentColor: '#7FB3D5',
+      borderColor: 'rgba(127,179,213,0.5)',
+      glowColor: 'rgba(127,179,213,0.2)',
+    },
+    {
+      id: 3,
+      icon: '🌤️',
+      title: 'Weather Forecast',
+      subtitle: 'Destination Weather Chart',
+      description: 'View temperature, feels-like, and humidity trends across the day for your destination with a clean multi-line chart.',
+      accentColor: '#7FB3D5',
+      borderColor: 'rgba(127,179,213,0.4)',
+      glowColor: 'rgba(127,179,213,0.15)',
+    },
+    {
+      id: 4,
+      icon: '⭐',
+      title: 'Subscriptions',
+      subtitle: 'Basic · Gold · Premium',
+      description: 'Choose the plan that fits your travel style. Unlock Bus & Train bookings on Gold, and Live Flight Alerts on Premium.',
+      accentColor: '#D4AF37',
+      borderColor: 'rgba(212,175,55,0.5)',
+      glowColor: 'rgba(212,175,55,0.2)',
+    },
+    {
+      id: 5,
+      icon: '👤',
+      title: 'Profile',
+      subtitle: 'Your Travel Identity',
+      description: 'Manage your personal info, city, phone, age and gender. Change password and view your current active subscription plan.',
+      accentColor: 'var(--accent-brown)',
+      borderColor: 'rgba(139,90,43,0.5)',
+      glowColor: 'rgba(139,90,43,0.2)',
+    },
+  ];
+
   // Sync with localStorage
   useEffect(() => {
     localStorage.setItem('manzil-todos', JSON.stringify(todos));
   }, [todos]);
+
+  // Carousel auto-play
+  useEffect(() => {
+    if (!isPaused) {
+      const interval = setInterval(() => {
+        setActiveIndex(prev => (prev + 1) % featureSlides.length);
+      }, 3500);
+      return () => clearInterval(interval);
+    }
+  }, [isPaused, featureSlides.length]);
 
   // Click outside to close
   useEffect(() => {
@@ -105,6 +170,117 @@ export default function Home() {
             <Link to="/subscriptions" style={{ textDecoration: 'none' }}>
               <button className="btn-primary" style={{ width: '100%', background: 'var(--accent-brown)', border: '1px solid rgba(255,255,255,0.4)' }}>Upgrade Now</button>
             </Link>
+          </div>
+        </div>
+
+        {/* Feature Showcase Carousel */}
+        <div style={{ width: '100%', marginTop: '40px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+            <h3 style={{ color: 'white', fontSize: '1.1rem', fontWeight: 700, fontFamily: 'Outfit,sans-serif', opacity: 0.9, margin: 0 }}>
+              ✨ Explore Features
+            </h3>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {featureSlides.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => { setActiveIndex(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
+                  style={{
+                    width: activeIndex === i ? '24px' : '8px',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: activeIndex === i ? 'var(--primary-green)' : 'rgba(255,255,255,0.3)',
+                    border: 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    padding: 0,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          <div style={{ overflow: 'hidden', width: '100%' }}>
+            <div style={{
+              display: 'flex',
+              gap: '16px',
+              transform: `translateX(calc(-${activeIndex} * (280px + 16px)))`,
+              transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
+              willChange: 'transform',
+            }}
+            onMouseEnter={() => setIsPaused(true)}
+            onMouseLeave={() => setIsPaused(false)}
+            >
+              {featureSlides.map((slide, i) => (
+                <div
+                  key={slide.id}
+                  onClick={() => { setActiveIndex(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
+                  style={{
+                    minWidth: '280px',
+                    borderRadius: 'var(--radius-lg)',
+                    padding: '28px 24px',
+                    background: activeIndex === i
+                      ? `linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))`
+                      : 'rgba(255,255,255,0.07)',
+                    backdropFilter: 'blur(16px)',
+                    border: activeIndex === i
+                      ? `1px solid ${slide.borderColor}`
+                      : '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: activeIndex === i
+                      ? `0 8px 32px ${slide.glowColor}, 0 0 0 1px ${slide.borderColor}`
+                      : 'none',
+                    cursor: 'pointer',
+                    transition: 'all 0.4s ease',
+                    transform: activeIndex === i ? 'scale(1.02)' : 'scale(0.97)',
+                    opacity: activeIndex === i ? 1 : 0.6,
+                    flexShrink: 0,
+                  }}
+                >
+                  <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>{slide.icon}</div>
+                  <div style={{
+                    display: 'inline-block',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: slide.accentColor,
+                    marginBottom: '8px',
+                    background: `${slide.glowColor}`,
+                    padding: '3px 10px',
+                    borderRadius: 'var(--radius-pill)',
+                    border: `1px solid ${slide.borderColor}`,
+                  }}>
+                    {slide.subtitle}
+                  </div>
+                  <h4 style={{
+                    color: 'white',
+                    fontSize: '1.2rem',
+                    fontFamily: 'Outfit,sans-serif',
+                    fontWeight: 700,
+                    margin: '8px 0 10px',
+                  }}>
+                    {slide.title}
+                  </h4>
+                  <p style={{
+                    color: 'rgba(255,255,255,0.65)',
+                    fontSize: '0.875rem',
+                    lineHeight: 1.6,
+                    margin: 0,
+                    fontFamily: 'DM Sans,sans-serif',
+                  }}>
+                    {slide.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
+            <button
+              onClick={() => { setActiveIndex(prev => (prev - 1 + featureSlides.length) % featureSlides.length); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
+              style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
+            >‹</button>
+            <button
+              onClick={() => { setActiveIndex(prev => (prev + 1) % featureSlides.length); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
+              style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
+            >›</button>
           </div>
         </div>
 
