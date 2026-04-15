@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import WeatherWidget from './components/WeatherWidget';
+import TodoPanel from './components/TodoPanel';
+import Packing from './pages/Packing';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -28,6 +30,7 @@ function App() {
 
       {user && <Navbar />}
       {user && <WeatherWidget />}
+      {user && <TodoPanel />}
       
       <div className="main-content-wrapper" style={{ paddingTop: user ? '80px' : '0', position: 'relative', zIndex: 1 }}>
         <Routes location={location} key={location.pathname}>
@@ -39,6 +42,7 @@ function App() {
           <Route path="/bookings" element={<ProtectedRoute><MyBookings key={location.pathname} /></ProtectedRoute>} />
           <Route path="/subscriptions" element={<ProtectedRoute><Subscriptions key={location.pathname} /></ProtectedRoute>} />
           <Route path="/profile" element={<ProtectedRoute><Profile key={location.pathname} /></ProtectedRoute>} />
+          <Route path="/packing" element={<ProtectedRoute><Packing /></ProtectedRoute>} />
         </Routes>
       </div>
     </>
