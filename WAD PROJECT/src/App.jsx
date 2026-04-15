@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import WeatherWidget from './components/WeatherWidget';
+import TodoPanel from './components/TodoPanel';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -28,6 +29,7 @@ function App() {
 
       {user && <Navbar />}
       {user && <WeatherWidget />}
+      {user && <TodoPanel />}
       
       <div className="main-content-wrapper" style={{ paddingTop: user ? '80px' : '0', position: 'relative', zIndex: 1 }}>
         <Routes location={location} key={location.pathname}>
