@@ -26,6 +26,7 @@ export default function Landing() {
       accentColor: 'var(--primary-green)',
       borderColor: 'rgba(45,106,79,0.5)',
       glowColor: 'rgba(45,106,79,0.2)',
+      image: '/images/features/feature_alerts.png'
     },
     {
       id: 2,
@@ -36,6 +37,7 @@ export default function Landing() {
       accentColor: '#7FB3D5',
       borderColor: 'rgba(127,179,213,0.5)',
       glowColor: 'rgba(127,179,213,0.2)',
+      image: '/images/features/feature_map.png'
     },
     {
       id: 3,
@@ -46,9 +48,21 @@ export default function Landing() {
       accentColor: '#7FB3D5',
       borderColor: 'rgba(127,179,213,0.4)',
       glowColor: 'rgba(127,179,213,0.15)',
+      image: '/images/features/feature_weather.png'
     },
     {
       id: 4,
+      icon: '⚡',
+      title: 'Quick Schedule',
+      subtitle: 'Dash Widgets',
+      description: 'Quickly access your most frequent routes like Home to College or Hostel to Station with a single click from your dashboard.',
+      accentColor: 'var(--primary-green)',
+      borderColor: 'rgba(45,106,79,0.3)',
+      glowColor: 'rgba(45,106,79,0.1)',
+      image: '/images/features/feature_quick.png'
+    },
+    {
+      id: 5,
       icon: '⭐',
       title: 'Subscriptions',
       subtitle: 'Basic · Gold · Premium',
@@ -56,9 +70,10 @@ export default function Landing() {
       accentColor: '#D4AF37',
       borderColor: 'rgba(212,175,55,0.5)',
       glowColor: 'rgba(212,175,55,0.2)',
+      image: '/images/features/feature_subscriptions.png'
     },
     {
-      id: 5,
+      id: 6,
       icon: '👤',
       title: 'Profile',
       subtitle: 'Your Travel Identity',
@@ -66,8 +81,10 @@ export default function Landing() {
       accentColor: 'var(--accent-brown)',
       borderColor: 'rgba(139,90,43,0.5)',
       glowColor: 'rgba(139,90,43,0.2)',
+      image: '/images/features/feature_profile.png'
     },
   ];
+
 
   useEffect(() => {
     // Lock body scroll
@@ -94,10 +111,11 @@ export default function Landing() {
     if (!isPaused) {
       const interval = setInterval(() => {
         setActiveIndex(prev => (prev + 1) % featureSlides.length);
-      }, 3500);
+      }, 2000);
       return () => clearInterval(interval);
     }
   }, [isPaused, featureSlides.length]);
+
 
   const slides = [
     { id: 'hero', label: 'Hero' },
@@ -149,17 +167,18 @@ export default function Landing() {
         {/* Slide 0: Hero + Explore Carousel */}
         <div className="hero-section" style={{ 
           width: '100vw', height: '100vh', flexShrink: 0, display: 'flex', flexDirection: 'column', 
-          justifyContent: 'center', alignItems: 'center', paddingTop: '40px', textAlign: 'center', position: 'relative'
+          justifyContent: 'center', alignItems: 'center', paddingTop: '100px', textAlign: 'center', position: 'relative',
+          maxWidth: 'none'
         }}>
-          <div style={{ marginBottom: '20px' }}>
+          <div style={{ marginBottom: '20px', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <h1 style={{
               fontFamily: 'Outfit', fontWeight: 800, fontSize: 'clamp(3rem, 10vw, 7rem)',
               letterSpacing: '0.15em', margin: 0, animation: 'manzil-glow 4s infinite ease-in-out',
-              textTransform: 'uppercase', lineHeight: 1
+              textTransform: 'uppercase', lineHeight: 1, textAlign: 'center', width: '100%'
             }}>
               MANZIL
             </h1>
-            <p style={{ fontSize: '1.2rem', color: 'white', opacity: 0.9, marginTop: '12px', letterSpacing: '4px', fontWeight: 300 }}>
+            <p style={{ fontSize: '1.2rem', color: 'white', opacity: 0.9, marginTop: '12px', letterSpacing: '4px', fontWeight: 300, textAlign: 'center' }}>
               REST EASY. WE'LL WAKE YOU.
             </p>
           </div>
@@ -172,127 +191,116 @@ export default function Landing() {
             Get Started →
           </button>
 
-          {/* Explore Features Carousel as main transition area */}
-          <div style={{
-            marginTop: '40px',
-            width: '100%',
-            overflow: 'hidden',
-            padding: '40px 0',
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-          }}>
-            <div style={{ width: '100%', maxWidth: '1100px', padding: '0 24px 48px', margin: '0 auto' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                <h3 style={{ color: 'white', fontSize: '1.1rem', fontWeight: 700, fontFamily: 'Outfit,sans-serif', opacity: 0.9, margin: 0 }}>
+          {/* Redesigned Explore Features Carousel */}
+          <div style={{ marginTop: '60px', width: '100%', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ maxWidth: '1100px', margin: '0 auto', padding: '0 24px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '32px' }}>
+                <h3 style={{ color: 'white', fontSize: '1.5rem', fontWeight: 700, fontFamily: 'Outfit,sans-serif', opacity: 0.9, margin: 0 }}>
                   ✨ Explore Features
                 </h3>
-                <div style={{ display: 'flex', gap: '8px' }}>
-                  {featureSlides.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => { setActiveIndex(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
-                      style={{
-                        width: activeIndex === i ? '24px' : '8px',
-                        height: '8px',
-                        borderRadius: '4px',
-                        background: activeIndex === i ? 'var(--primary-green)' : 'rgba(255,255,255,0.3)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        padding: 0,
-                      }}
-                    />
-                  ))}
-                </div>
               </div>
+              
               <div style={{ overflow: 'hidden', width: '100%' }}>
-                <div
-                  style={{
-                    display: 'flex',
-                    gap: '16px',
-                    transform: 'translateX(calc(-' + activeIndex + ' * (280px + 16px)))',
-                    transition: 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-                    willChange: 'transform',
-                  }}
-                  onMouseEnter={() => setIsPaused(true)}
-                  onMouseLeave={() => setIsPaused(false)}
+                <div style={{
+                  display: 'flex',
+                  gap: '16px',
+                  position: 'relative',
+                  left: '50%',
+                  transform: `translateX(calc(-350px - ${activeIndex} * 716px))`,
+                  transition: 'transform 1.0s cubic-bezier(0.4, 0, 0.2, 1)',
+                  willChange: 'transform',
+                }}
+                onMouseEnter={() => setIsPaused(true)}
+                onMouseLeave={() => setIsPaused(false)}
                 >
                   {featureSlides.map((slide, i) => (
                     <div
                       key={slide.id}
                       onClick={() => { setActiveIndex(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
                       style={{
-                        minWidth: '280px',
+                        width: '700px',
                         borderRadius: 'var(--radius-lg)',
-                        padding: '28px 24px',
+                        overflow: 'hidden',
                         background: activeIndex === i
-                          ? 'linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))'
+                          ? `linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0.08))`
                           : 'rgba(255,255,255,0.07)',
                         backdropFilter: 'blur(16px)',
                         border: activeIndex === i
-                          ? '1px solid ' + slide.borderColor
+                          ? `1px solid ${slide.borderColor}`
                           : '1px solid rgba(255,255,255,0.1)',
                         boxShadow: activeIndex === i
-                          ? '0 8px 32px ' + slide.glowColor + ', 0 0 0 1px ' + slide.borderColor
+                          ? `0 12px 40px ${slide.glowColor}, 0 0 0 1px ${slide.borderColor}`
                           : 'none',
                         cursor: 'pointer',
                         transition: 'all 0.4s ease',
                         transform: activeIndex === i ? 'scale(1.02)' : 'scale(0.97)',
                         opacity: activeIndex === i ? 1 : 0.6,
                         flexShrink: 0,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        textAlign: 'left'
                       }}
                     >
-                      <div style={{ fontSize: '2.2rem', marginBottom: '14px' }}>{slide.icon}</div>
-                      <div style={{
-                        display: 'inline-block',
-                        fontSize: '0.7rem',
-                        fontWeight: 700,
-                        letterSpacing: '0.08em',
-                        textTransform: 'uppercase',
-                        color: slide.accentColor,
-                        marginBottom: '8px',
-                        background: slide.glowColor,
-                        padding: '3px 10px',
-                        borderRadius: 'var(--radius-pill)',
-                        border: '1px solid ' + slide.borderColor,
-                      }}>
-                        {slide.subtitle}
+                      <div style={{ width: '100%', height: '380px', overflow: 'hidden', background: 'rgba(0,0,0,0.2)', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                        <img 
+                          src={slide.image} 
+                          alt={slide.title} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: activeIndex === i ? 1 : 0.7, transition: 'opacity 0.4s' }} 
+                        />
                       </div>
-                      <h4 style={{
-                        color: 'white',
-                        fontSize: '1.2rem',
-                        fontFamily: 'Outfit,sans-serif',
-                        fontWeight: 700,
-                        margin: '8px 0 10px',
-                      }}>
-                        {slide.title}
-                      </h4>
-                      <p style={{
-                        color: 'rgba(255,255,255,0.65)',
-                        fontSize: '0.875rem',
-                        lineHeight: 1.6,
-                        margin: 0,
-                        fontFamily: 'DM Sans,sans-serif',
-                      }}>
-                        {slide.description}
-                      </p>
+                      <div style={{ padding: '24px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+                          <div style={{ fontSize: '1.8rem' }}>{slide.icon}</div>
+                          <div style={{
+                            display: 'inline-block',
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.08em',
+                            textTransform: 'uppercase',
+                            color: slide.accentColor,
+                            background: `${slide.glowColor}`,
+                            padding: '3px 10px',
+                            borderRadius: 'var(--radius-pill)',
+                            border: `1px solid ${slide.borderColor}`,
+                          }}>
+                            {slide.subtitle}
+                          </div>
+                        </div>
+                        <h4 style={{ color: 'white', fontSize: '1.2rem', fontFamily: 'Outfit,sans-serif', fontWeight: 700, margin: '0 0 8px' }}>
+                          {slide.title}
+                        </h4>
+                        <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '0.875rem', lineHeight: 1.5, margin: 0, fontFamily: 'DM Sans,sans-serif' }}>
+                          {slide.description}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '16px' }}>
-                <button
-                  onClick={() => { setActiveIndex(prev => (prev - 1 + featureSlides.length) % featureSlides.length); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
-                  style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
-                >‹</button>
-                <button
-                  onClick={() => { setActiveIndex(prev => (prev + 1) % featureSlides.length); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
-                  style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', color: 'white', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background 0.2s' }}
-                >›</button>
+
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px', marginTop: '32px' }}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {featureSlides.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => { setActiveIndex(i); setIsPaused(true); setTimeout(() => setIsPaused(false), 6000); }}
+                      style={{
+                        width: activeIndex === i ? '32px' : '10px',
+                        height: '10px',
+                        borderRadius: '5px',
+                        background: activeIndex === i ? 'var(--primary-green)' : 'rgba(255,255,255,0.2)',
+                        border: 'none',
+                        cursor: 'pointer',
+                        transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+                        padding: 0,
+                      }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>
+
         </div>
 
         {/* Explore Slide */}
@@ -300,9 +308,9 @@ export default function Landing() {
           <div className="features-grid" style={{ padding: '0 40px', gap: '32px' }}>
             {features.slice(0, 3).map((f, i) => (
               <div key={i} className={'feature-card ' + ['green', 'blue', 'brown'][i]}>
-                <div className="feature-icon" style={{ fontSize: '2.5rem' }}>{f.icon}</div>
-                <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: 700 }}>{f.title}</h3>
-                <p style={{ color: '#444', fontSize: '1.05rem', lineHeight: 1.6 }}>{f.desc}</p>
+                <div className="feature-icon" style={{ fontSize: '2.5rem', color: f.color }}>{f.icon}</div>
+                <h3 style={{ marginBottom: '16px', fontSize: '1.5rem', fontWeight: 700, color: 'white' }}>{f.title}</h3>
+                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1.05rem', lineHeight: 1.6 }}>{f.desc}</p>
               </div>
             ))}
           </div>

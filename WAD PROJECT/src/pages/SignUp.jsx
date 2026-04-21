@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
+import { validatePassword, validatePhone } from '../utils/validation';
 
 export function SignUpForm({ onToggleAuth }) {
   const { signUp } = useAuth();
@@ -27,6 +28,18 @@ export function SignUpForm({ onToggleAuth }) {
       setError("Passwords don't match");
       return;
     }
+
+    const validation = validatePassword(formData.password);
+    if (!validation.isValid) {
+      setError(`Password must include ${validation.errors.join(', ')}`);
+      return;
+    }
+
+    if (!validatePhone(formData.phone)) {
+      setError("Phone number must be exactly 10 digits");
+      return;
+    }
+
     setError('');
     setLoading(true);
     try {
